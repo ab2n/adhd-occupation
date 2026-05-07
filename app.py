@@ -25,15 +25,12 @@ st.markdown("""
     .stMarkdown {
         color: #333;
     }
-    .big-font {
-        font-size: 20px !important;
-    }
 </style>
 """, unsafe_allow_html=True)
 
 # --- Title ---
 st.title("🎲 **ADHD Playground**")
-st.markdown("*" + "Pour survivre aux réunions sans mourir d'ennui. Par **bgriot**." + "*")
+st.markdown("Pour survivre aux réunions sans mourir d'ennui. Par **bgriot**.")
 
 # --- Sidebar ---
 st.sidebar.header("⚡ Menu")
@@ -44,8 +41,8 @@ activity = st.sidebar.radio(
 
 # --- Tabs ---
 if activity == "🎲 Décideur Absurde":
-    st.header("⚖️ **Le Décideur Absurde**")
-    st.write("Pose une question existentielle (ex: *Dois-je faire semblant de prendre des notes ?*), et laisse le destin décider.")
+    st.header("⚖️ Le Décideur Absurde")
+    st.write("Pose une question existentielle, et laisse le destin décider.")
 
     question = st.text_input("Ta question :", placeholder="Ex: Dois-je aller aux toilettes MAINTENANT ?")
     if st.button("Lancer le dé du destin"):
@@ -64,7 +61,7 @@ if activity == "🎲 Décideur Absurde":
             st.warning("Pose une question, sinon le destin ne peut pas t'aider !")
 
 elif activity == "📝 Cadavre Exquis":
-    st.header("📜 **Cadavre Exquis**")
+    st.header("📜 Cadavre Exquis")
     st.write("Écris un mot, et laisse l'IA générer une phrase complètement déjantée.")
 
     word = st.text_input("Ton mot :", placeholder="Ex: Licorne")
@@ -83,27 +80,55 @@ elif activity == "📝 Cadavre Exquis":
             st.warning("Il faut un mot pour démarrer la folie !")
 
 elif activity == "🖱️ Clic Frénétique":
-    st.header("🖱️ **Clic Frénétique**")
-    st.write("Clic aussi vite que possible ! Le compteur s'arrête après 10 secondes.")
+    st.header("🖱️ Clic Frénétique")
+    st.write("Clic sur le bouton **aussi vite que possible** pendant 10 secondes !")
 
-    if st.button("🚀 **DÉMARRER LE CHRONO**"):
-        score = 0
-        time_left = 10
-        progress_bar = st.progress(0)
-        score_display = st.empty()
-        time_display = st.empty()
+    # Initialisation des variables de session
+    if 'score' not in st.session_state:
+        st.session_state.score = 0
+    if 'time_left' not in st.session_state:
+        st.session_state.time_left = 10
+    if 'game_active' not in st.session_state:
+        st.session_state.game_active = False
 
-        for i in range(10):
+    # Bouton pour démarrer le jeu
+    if st.button("🚀 **DÉMARRER LE CHRONO**") and not st.session_state.game_active:
+        st.session_state.score = 0
+        st.session_state.time_left = 10
+        st.session_state.game_active = True
+        st.rerun()
+
+    # Logique du jeu
+    if st.session_state.game_active:
+        if st.session_state.time_left > 0:
+            # Bouton pour cliquer
+            if st.button("💥 **CLIC !**", key="click_button", use_container_width=True):
+                st.session_state.score += 1
+                st.rerun()
+
+            # Affichage du temps restant et du score
+            progress_bar = st.progress((10 - st.session_state.time_left) / 10)
+            st.write(f"⏳ Temps restant : **{st.session_state.time_left} secondes**")
+            st.write(f"🎯 Score actuel : **{st.session_state.score} clics**")
+
+            # Décrémenter le temps
             time.sleep(1)
-            time_left -= 1
-            progress_bar.progress((10 - time_left) / 10)
-            time_display.text(f"⏳ Temps restant : {time_left} secondes")
-
-        st.balloons()
-        st.success(f"🎉 **SCORE : {score} clics** (enfin, on fait semblant, hehe)")
+            st.session_state.time_left -= 1
+            st.rerun()
+        else:
+            # Fin du jeu
+            st.session_state.game_active = False
+            st.balloons()
+            st.success(f"🎉 **SCORE FINAL : {st.session_state.score} clics en 10 secondes !**")
+            if st.session_state.score > 30:
+                st.write("🔥 **T'es une machine à cliquer !**")
+            elif st.session_state.score > 15:
+                st.write("👍 **Pas mal !**")
+            else:
+                st.write("😅 **T'as besoin de t'entraîner !**")
 
 elif activity == "💡 Idées Folles":
-    st.header("💡 **Boîte à Idées Folles**")
+    st.header("💡 Boîte à Idées Folles")
     st.write("Note toutes les idées géniales (ou pas) qui te passent par la tête pendant la réunion.")
 
     idea = st.text_area("Ta pensée du moment :", placeholder="Ex: Et si on remplaçait les réunions par des battles de karaoké ?")
@@ -115,7 +140,7 @@ elif activity == "💡 Idées Folles":
             st.warning("T'as oublié d'écrire ton chef-d'œuvre !")
 
 elif activity == "🎨 Gribouillis":
-    st.header("🎨 **Gribouillis Numérique**")
+    st.header("🎨 Gribouillis Numérique")
     st.write("Dessine avec des emojis ! (Oui, c'est limité. Mais c'est mieux que rien.)")
 
     canvas = st.text_area("Ton œuvre d'art :", placeholder="Ex: 🎨⬛⬜⬛\n⬜🟥⬜\n⬛⬜⬛", height=200)
@@ -128,4 +153,4 @@ elif activity == "🎨 Gribouillis":
 
 # --- Footer ---
 st.markdown("---")
-st.markdown("💡 *PS : Si t'as d'autres idées de modules, dis-le-moi !*")
+st.markdown("💡 PS : Si t'as d'autres idées de modules, dis-le-moi !")
