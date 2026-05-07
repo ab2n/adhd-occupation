@@ -1,6 +1,3 @@
-# Streamlit — Réu Survival Kit (ADHD Edition)
-
-````python
 import streamlit as st
 import random
 import time
@@ -240,22 +237,9 @@ st.caption(
     f"Dernière mise à jour mentale : {datetime.now().strftime('%H:%M:%S')}"
 )
 
-st.markdown(
-    """
-    ### 💡 Lancement
+st.markdown("""
+### 💡 Lancement
 
-    ```bash
-    pip install streamlit
-    streamlit run app.py
-    ```
-    """
-)
-````
-
-## Idées bonus si tu veux pousser le délire
-
-* Ajouter un faux bouton "Quitter la réunion" qui affiche juste un GIF.
-* Ajouter des sons de clavier mécaniques aléatoires.
-* Mettre un mini jeu style Flappy Bird dans une sidebar.
-* Générer des phrases corporate absurdes avec IA.
-* Ajouter un mode "caméra allumée" avec conseils de survie.
+```bash
+pip install streamlit
+streamlit run app.py
