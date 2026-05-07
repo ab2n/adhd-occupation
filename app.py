@@ -1,245 +1,153 @@
 import streamlit as st
 import random
 import time
-from datetime import datetime
 
+# --- Config ---
 st.set_page_config(
-    page_title="Réu Survival Kit",
-    page_icon="🧠",
+    page_title="ADHD Playground",
+    page_icon="🎲",
     layout="wide"
 )
 
-# -----------------------------
-# Helpers
-# -----------------------------
+# --- Style ---
+st.markdown("""
+<style>
+    .stButton>button {
+        background-color: #FF4B4B;
+        color: white;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: bold;
+    }
+    .stTextInput>div>div>input {
+        background-color: #FFF0F0;
+    }
+    .stMarkdown {
+        color: #333;
+    }
+    .big-font {
+        font-size: 20px !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-quotes = [
-    "Cette réunion aurait pu être un email.",
-    "Tu tiens bon. Le speaker, moins.",
-    "Le vrai KPI c'est survivre jusqu'à la fin.",
-    "Ton cerveau mérite une médaille.",
-    "Oui, ils reparlent du même sujet.",
-    "Respire. Hoche la tête. Continue.",
-    "Tu es actuellement en mode camouflage social.",
-]
+# --- Title ---
+st.title("🎲 **ADHD Playground**")
+st.markdown("*" + "Pour survivre aux réunions sans mourir d'ennui. Par **bgriot**." + "*")
 
-buzzwords = [
-    "synergie", "roadmap", "scalabilité", "alignement",
-    "disruptif", "pipeline", "quick win", "vision produit",
-    "ownership", "verticalisation", "optimisation"
-]
-
-animals = [
-    "🦦", "🦝", "🐸", "🐢", "🦥", "🐙", "🦜", "🐌"
-]
-
-excuses = [
-    "Je crois que mon VPN mange ma bande passante.",
-    "Pardon, Teams a décidé de redémarrer mon cerveau.",
-    "J'avais un lag audio quantique.",
-    "Mon micro était muté dans une autre dimension.",
-    "Je prenais des notes ultra stratégiques.",
-]
-
-if "score" not in st.session_state:
-    st.session_state.score = 0
-
-if "pet_name" not in st.session_state:
-    st.session_state.pet_name = "Blob"
-
-if "pet_mood" not in st.session_state:
-    st.session_state.pet_mood = 5
-
-# -----------------------------
-# Header
-# -----------------------------
-
-st.title("🧠 Réu Survival Kit")
-st.caption("Un mini refuge dopamine-friendly pour les réunions interminables.")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.metric("Niveau de survie", f"{st.session_state.score} XP")
-
-with col2:
-    st.metric("Motivation actuelle", random.randint(3, 97))
-
-with col3:
-    st.metric("Temps perdu estimé", f"{random.randint(14, 83)} min")
-
-st.divider()
-
-# -----------------------------
-# Tabs
-# -----------------------------
-
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "🎯 Mini dopamine",
-    "🐾 Animal de réu",
-    "🎲 Chaos",
-    "📈 Bingo corporate",
-    "🧘 Focus absurde"
-])
-
-# -----------------------------
-# TAB 1
-# -----------------------------
-
-with tab1:
-    st.subheader("Boutons inutiles mais satisfaisants")
-
-    c1, c2, c3 = st.columns(3)
-
-    with c1:
-        if st.button("🎉 Dopamine instantanée"):
-            st.balloons()
-            st.session_state.score += 10
-            st.success(random.choice(quotes))
-
-    with c2:
-        if st.button("🔥 Booster de productivité fictif"):
-            st.session_state.score += 5
-            st.toast("Tu es maintenant 2% plus corporate.")
-
-    with c3:
-        if st.button("💀 Réunion critique détectée"):
-            st.error("Quelqu'un vient de dire 'on se refait un point'.")
-
-    st.divider()
-
-    st.subheader("Machine à compliments absurdes")
-
-    compliments = [
-        "Ton multitasking est scientifiquement inquiétant.",
-        "Tu pourrais survivre à 4 daily meetings d'affilée.",
-        "Ton niveau de patience est mythologique.",
-        "Même ton onglet YouTube est organisé.",
-        "Tu maîtrises l'art du regard attentif vide.",
-    ]
-
-    if st.button("✨ Générer un compliment"):
-        st.info(random.choice(compliments))
-
-# -----------------------------
-# TAB 2
-# -----------------------------
-
-with tab2:
-    st.subheader("Ton animal de réunion")
-
-    pet = random.choice(animals)
-
-    st.markdown(
-        f"## {pet} {st.session_state.pet_name}\n"
-        f"Humeur actuelle : {'⭐' * st.session_state.pet_mood}"
-    )
-
-    c1, c2, c3 = st.columns(3)
-
-    with c1:
-        if st.button("🍪 Nourrir"):
-            st.session_state.pet_mood = min(10, st.session_state.pet_mood + 1)
-            st.success("L'animal approuve cette stratégie.")
-
-    with c2:
-        if st.button("🎾 Jouer"):
-            st.session_state.pet_mood = min(10, st.session_state.pet_mood + 2)
-            st.balloons()
-
-    with c3:
-        if st.button("📉 Lui montrer le backlog"):
-            st.session_state.pet_mood = max(1, st.session_state.pet_mood - 3)
-            st.warning("Erreur psychologique.")
-
-# -----------------------------
-# TAB 3
-# -----------------------------
-
-with tab3:
-    st.subheader("Chaos generator")
-
-    if st.button("🎲 Situation aléatoire"):
-        events = [
-            "Quelqu'un parle depuis 8 minutes sans respirer.",
-            "Une personne partage le mauvais écran.",
-            "Le manager dit 'rapidement' avant un monologue.",
-            "Un micro produit des sons extraterrestres.",
-            "Quelqu'un dit 'petite question' et ouvre un débat de 40 min.",
-            "Tu reviens mentalement après 12 minutes d'absence totale.",
-        ]
-
-        st.write(random.choice(events))
-        st.session_state.score += 3
-
-    st.divider()
-
-    st.subheader("Excuse professionnelle d'urgence")
-
-    if st.button("🛟 Générer une excuse"):
-        st.code(random.choice(excuses))
-
-# -----------------------------
-# TAB 4
-# -----------------------------
-
-with tab4:
-    st.subheader("Bingo Corporate")
-
-    cols = st.columns(3)
-
-    for i, word in enumerate(random.sample(buzzwords, 9)):
-        with cols[i % 3]:
-            if st.checkbox(word, key=f"buzz_{i}"):
-                st.session_state.score += 1
-
-    if st.session_state.score > 25:
-        st.success("🏆 Achievement unlocked : survivant senior des réunions")
-
-# -----------------------------
-# TAB 5
-# -----------------------------
-
-with tab5:
-    st.subheader("Focus absurde")
-
-    duration = st.slider("Timer de faux focus (minutes)", 1, 15, 5)
-
-    if st.button("⏳ Lancer le focus"):
-        bar = st.progress(0)
-        status = st.empty()
-
-        fake_tips = [
-            "Regarde intensément ton écran.",
-            "Hoche la tête de temps en temps.",
-            "Dis 'bonne question'.",
-            "Prends des notes illisibles.",
-            "Fais semblant de comprendre le diagramme.",
-        ]
-
-        for i in range(100):
-            time.sleep(0.03)
-            bar.progress(i + 1)
-
-            if i % 20 == 0:
-                status.info(random.choice(fake_tips))
-
-        st.success("Focus terminé. Récompense émotionnelle virtuelle accordée.")
-        st.session_state.score += 15
-
-# -----------------------------
-# Footer
-# -----------------------------
-
-st.divider()
-
-st.caption(
-    f"Dernière mise à jour mentale : {datetime.now().strftime('%H:%M:%S')}"
+# --- Sidebar ---
+st.sidebar.header("⚡ Menu")
+activity = st.sidebar.radio(
+    "Choisis ton aventure :",
+    ["🎲 Décideur Absurde", "📝 Cadavre Exquis", "🖱️ Clic Frénétique", "💡 Idées Folles", "🎨 Gribouillis"]
 )
 
-st.markdown("""
-### 💡 Lancement
+# --- Tabs ---
+if activity == "🎲 Décideur Absurde":
+    st.header("⚖️ **Le Décideur Absurde**")
+    st.write("Pose une question existentielle (ex: *Dois-je faire semblant de prendre des notes ?*), et laisse le destin décider.")
 
-```bash
-pip install streamlit
-streamlit run app.py
+    question = st.text_input("Ta question :", placeholder="Ex: Dois-je aller aux toilettes MAINTENANT ?")
+    if st.button("Lancer le dé du destin"):
+        if question:
+            decision = random.choice([
+                "✅ **OUI, FONCE !** (Mais discrètement.)",
+                "❌ **NON, ATTEND.** (Ou pas.)",
+                "🤷 **PEUT-ÊTRE.** (Lance à nouveau.)",
+                "💥 **FAIS-LE SANS RÉFLÉCHIR.**",
+                "😴 **VA FAIRE UNE SIESTE.**",
+                "🎉 **TRANSFORME TA QUESTION EN CHANSON.**"
+            ])
+            st.balloons()
+            st.success(decision)
+        else:
+            st.warning("Pose une question, sinon le destin ne peut pas t'aider !")
+
+elif activity == "📝 Cadavre Exquis":
+    st.header("📜 **Cadavre Exquis**")
+    st.write("Écris un mot, et laisse l'IA générer une phrase complètement déjantée.")
+
+    word = st.text_input("Ton mot :", placeholder="Ex: Licorne")
+    if st.button("Générer l'absurdité"):
+        if word:
+            absurd_phrases = [
+                f"Le/La {word} a volé mon sandwich et l'a remplacé par un {random.choice(['nuage', 'réfrigérateur', 'président', 'chat en pyjama'])}.",
+                f"Hier, j'ai vu un {word} danser la salsa avec {random.choice(['ma grand-mère', 'un robot', 'une pizza', 'ton boss'])}.",
+                f"Attention : ce {word} est en réalité un espion de {random.choice(['la CIA', 'les aliens', 'ton frigo', 'Emmanuel Macron'])}.",
+                f"Si tu mélanges un {word} avec {random.choice(['du ketchup', 'une chaussette', 'un Excel', 'ton café'])}, tu obtiens... le bonheur.",
+                f"Le {word} est la solution à tous tes problèmes. Sauf celui de {random.choice(['ta belle-mère', 'les impôts', 'la gravité', 'cette réunion'])}."
+            ]
+            st.balloons()
+            st.success(random.choice(absurd_phrases))
+        else:
+            st.warning("Il faut un mot pour démarrer la folie !")
+
+elif activity == "🖱️ Clic Frénétique":
+    st.header("🖱️ **Clic Frénétique**")
+    st.write("Clic aussi vite que possible ! Le compteur s'arrête après 10 secondes.")
+
+    if st.button("🚀 **DÉMARRER LE CHRONO**"):
+        score = 0
+        time_left = 10
+        progress_bar = st.progress(0)
+        score_display = st.empty()
+        time_display = st.empty()
+
+        for i in range(10):
+            time.sleep(1)
+            time_left -= 1
+            progress_bar.progress((10 - time_left) / 10)
+            time_display.text(f"⏳ Temps restant : {time_left} secondes")
+
+        st.balloons()
+        st.success(f"🎉 **SCORE : {score} clics** (enfin, on fait semblant, hehe)")
+
+elif activity == "💡 Idées Folles":
+    st.header("💡 **Boîte à Idées Folles**")
+    st.write("Note toutes les idées géniales (ou pas) qui te passent par la tête pendant la réunion.")
+
+    idea = st.text_area("Ta pensée du moment :", placeholder="Ex: Et si on remplaçait les réunions par des battles de karaoké ?")
+    if st.button("📥 Sauvegarder cette pépite"):
+        if idea:
+            st.success("✅ Idée enregistrée ! (En vrai, elle est juste là. Mais c'est déjà ça.)")
+            st.markdown(f"> *{idea}*")
+        else:
+            st.warning("T'as oublié d'écrire ton chef-d'œuvre !")
+
+elif activity == "🎨 Gribouillis":
+    st.header("🎨 **Gribouillis Numérique**")
+    st.write("Dessine avec des emojis ! (Oui, c'est limité. Mais c'est mieux que rien.)")
+
+    canvas = st.text_area("Ton œuvre d'art :", placeholder="Ex: 🎨⬛⬜⬛\n⬜🟥⬜\n⬛⬜⬛", height=200)
+    if st.button("🖼️ Afficher mon chef-d'œuvre"):
+        if canvas:
+            st.code(canvas, language="text")
+            st.success("Magnifique ! (Ou pas. Mais on s'en fiche.)")
+        else:
+            st.warning("T'as rien dessiné, artiste !")
+
+# --- Footer ---
+st.markdown("---")
+st.markdown("💡 *PS : Si t'as d'autres idées de modules, dis-le-moi !*")
+</canvaentity
+---
+
+### **Comment l'utiliser ?**
+1. **Installe Streamlit** si ce n'est pas déjà fait :
+   ```bash
+   pip install streamlit
+   ```
+2. Copie le code ci-dessus dans un fichier `adhd_playground.py`.
+3. Lance l'app :
+   ```bash
+   streamlit run adhd_playground.py
+   ```
+4. **Amuse-toi** en mode discret pendant ta réunion !
+
+---
+### **Idées pour aller plus loin**
+- Ajouter un **minuteur pomodoro** pour les pauses.
+- Intégrer des **GIFs aléatoires** pour te faire rire.
+- Un **générateur de faux mails professionnels** (pour répondre à tes collègues sans réfléchir).
+
+Tu veux que j’ajoute ou modifie quelque chose ? 😊
