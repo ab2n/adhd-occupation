@@ -129,25 +129,3 @@ elif activity == "🎨 Gribouillis":
 # --- Footer ---
 st.markdown("---")
 st.markdown("💡 *PS : Si t'as d'autres idées de modules, dis-le-moi !*")
-</canvaentity
----
-
-### **Comment l'utiliser ?**
-1. **Installe Streamlit** si ce n'est pas déjà fait :
-   ```bash
-   pip install streamlit
-   ```
-2. Copie le code ci-dessus dans un fichier `adhd_playground.py`.
-3. Lance l'app :
-   ```bash
-   streamlit run adhd_playground.py
-   ```
-4. **Amuse-toi** en mode discret pendant ta réunion !
-
----
-### **Idées pour aller plus loin**
-- Ajouter un **minuteur pomodoro** pour les pauses.
-- Intégrer des **GIFs aléatoires** pour te faire rire.
-- Un **générateur de faux mails professionnels** (pour répondre à tes collègues sans réfléchir).
-
-Tu veux que j’ajoute ou modifie quelque chose ? 😊
