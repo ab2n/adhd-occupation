@@ -80,8 +80,8 @@ elif activity == "📝 Cadavre Exquis":
             st.warning("Il faut un mot pour démarrer la folie !")
 
 elif activity == "🖱️ Clic Frénétique (Jauge)":
-    st.header("🖱️ **Clic Frénétique : La Jauge de la Mort**")
-    st.write("La jauge monte toute seule ! **Clic pour la faire redescendre** et éviter qu'elle n'atteigne 100% pendant 20 secondes.")
+    st.header("🖱️ **Clic Frénétique : La Jauge Infernal**")
+    st.write("⚠️ **La jauge monte VITE !** Clic pour la faire redescendre et éviter qu'elle n'atteigne 100% pendant 20 secondes.")
 
     # Initialisation des variables de session
     if 'gauge_value' not in st.session_state:
@@ -104,17 +104,18 @@ elif activity == "🖱️ Clic Frénétique (Jauge)":
     # Logique du jeu
     if st.session_state.game_active and not st.session_state.game_over:
         # Affichage de la jauge
-        progress_bar = st.progress(st.session_state.gauge_value / 100)
-        st.write(f"📈 **Jauge : {st.session_state.gauge_value}%**")
-        st.write(f"⏳ **Temps restant : {st.session_state.time_left} secondes**")
+        progress_bar = st.progress(min(st.session_state.gauge_value / 100, 1.0))
+        st.write(f"📈 **Jauge : {min(st.session_state.gauge_value, 100):.0f}%**")
+        st.write(f"⏳ **Temps restant : {max(st.session_state.time_left, 0):.1f} secondes**")
 
         # Bouton pour cliquer et faire baisser la jauge
         if st.button("💥 **CLIC POUR FAIRE BAISSER LA JAUGE !**", key="click_button", use_container_width=True):
-            st.session_state.gauge_value = max(0, st.session_state.gauge_value - 10)  # Baisse de 10% par clic
+            st.session_state.gauge_value = max(0, st.session_state.gauge_value - 5)  # Baisse de 5% par clic
             st.rerun()
 
-        # La jauge monte toute seule
-        st.session_state.gauge_value = min(100, st.session_state.gauge_value + 1)  # Monte de 1% par rafraîchissement
+        # La jauge monte toute seule (2% toutes les 0.3 secondes)
+        st.session_state.gauge_value += 2
+        st.session_state.time_left -= 0.3
 
         # Vérifier si la jauge a atteint 100%
         if st.session_state.gauge_value >= 100:
@@ -122,23 +123,23 @@ elif activity == "🖱️ Clic Frénétique (Jauge)":
             st.session_state.game_over = True
             st.rerun()
 
-        # Décrémenter le temps
-        time.sleep(0.5)  # Rafraîchissement toutes les 0.5 secondes pour un effet fluide
-        st.session_state.time_left -= 0.5
-        st.rerun()
-
-        # Fin du jeu si le temps est écoulé
+        # Vérifier si le temps est écoulé
         if st.session_state.time_left <= 0:
             st.session_state.game_active = False
-            st.session_state.game_over = False
             st.balloons()
-            st.success(f"🎉 **BRAVO ! Tu as tenu 20 secondes !** (Jauge finale : {st.session_state.gauge_value}%)")
-            if st.session_state.gauge_value < 20:
-                st.write("🔥 **T'es un pro du clic !**")
-            elif st.session_state.gauge_value < 50:
-                st.write("👍 **Pas mal !**")
+            st.success(f"🎉 **BRAVO ! Tu as tenu 20 secondes !** (Jauge finale : {min(st.session_state.gauge_value, 100):.0f}%)")
+            if st.session_state.gauge_value < 30:
+                st.write("🔥 **T'es un DIEU du clic !**")
+            elif st.session_state.gauge_value < 60:
+                st.write("👍 **Respect !**")
             else:
-                st.write("😅 **T'as failli perdre !**")
+                st.write("😅 **T'as frôlé la catastrophe !**")
+            st.session_state.game_over = False
+            st.rerun()
+
+        # Rafraîchir toutes les 0.3 secondes
+        time.sleep(0.3)
+        st.rerun()
 
     # Si la jauge a atteint 100%
     if st.session_state.game_over:
