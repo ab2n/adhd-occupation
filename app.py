@@ -36,7 +36,7 @@ st.markdown("Pour survivre aux réunions sans mourir d'ennui. Par **bgriot**.")
 st.sidebar.header("⚡ Menu")
 activity = st.sidebar.radio(
     "Choisis ton aventure :",
-    ["🎲 Décideur Absurde", "📝 Cadavre Exquis", "🖱️ Clic Frénétique", "💡 Idées Folles", "🎨 Gribouillis"]
+    ["🎲 Décideur Absurde", "📝 Cadavre Exquis", "🖱️ Clic Frénétique (Jauge)", "💡 Idées Folles", "🎨 Gribouillis"]
 )
 
 # --- Tabs ---
@@ -79,53 +79,76 @@ elif activity == "📝 Cadavre Exquis":
         else:
             st.warning("Il faut un mot pour démarrer la folie !")
 
-elif activity == "🖱️ Clic Frénétique":
-    st.header("🖱️ Clic Frénétique")
-    st.write("Clic sur le bouton **aussi vite que possible** pendant 10 secondes !")
+elif activity == "🖱️ Clic Frénétique (Jauge)":
+    st.header("🖱️ **Clic Frénétique : La Jauge de la Mort**")
+    st.write("La jauge monte toute seule ! **Clic pour la faire redescendre** et éviter qu'elle n'atteigne 100% pendant 20 secondes.")
 
     # Initialisation des variables de session
-    if 'score' not in st.session_state:
-        st.session_state.score = 0
+    if 'gauge_value' not in st.session_state:
+        st.session_state.gauge_value = 0
     if 'time_left' not in st.session_state:
-        st.session_state.time_left = 10
+        st.session_state.time_left = 20
     if 'game_active' not in st.session_state:
         st.session_state.game_active = False
+    if 'game_over' not in st.session_state:
+        st.session_state.game_over = False
 
     # Bouton pour démarrer le jeu
-    if st.button("🚀 **DÉMARRER LE CHRONO**") and not st.session_state.game_active:
-        st.session_state.score = 0
-        st.session_state.time_left = 10
+    if st.button("🚀 **DÉMARRER LE JEU**") and not st.session_state.game_active and not st.session_state.game_over:
+        st.session_state.gauge_value = 0
+        st.session_state.time_left = 20
         st.session_state.game_active = True
+        st.session_state.game_over = False
         st.rerun()
 
     # Logique du jeu
-    if st.session_state.game_active:
-        if st.session_state.time_left > 0:
-            # Bouton pour cliquer
-            if st.button("💥 **CLIC !**", key="click_button", use_container_width=True):
-                st.session_state.score += 1
-                st.rerun()
+    if st.session_state.game_active and not st.session_state.game_over:
+        # Affichage de la jauge
+        progress_bar = st.progress(st.session_state.gauge_value / 100)
+        st.write(f"📈 **Jauge : {st.session_state.gauge_value}%**")
+        st.write(f"⏳ **Temps restant : {st.session_state.time_left} secondes**")
 
-            # Affichage du temps restant et du score
-            progress_bar = st.progress((10 - st.session_state.time_left) / 10)
-            st.write(f"⏳ Temps restant : **{st.session_state.time_left} secondes**")
-            st.write(f"🎯 Score actuel : **{st.session_state.score} clics**")
-
-            # Décrémenter le temps
-            time.sleep(1)
-            st.session_state.time_left -= 1
+        # Bouton pour cliquer et faire baisser la jauge
+        if st.button("💥 **CLIC POUR FAIRE BAISSER LA JAUGE !**", key="click_button", use_container_width=True):
+            st.session_state.gauge_value = max(0, st.session_state.gauge_value - 10)  # Baisse de 10% par clic
             st.rerun()
-        else:
-            # Fin du jeu
+
+        # La jauge monte toute seule
+        st.session_state.gauge_value = min(100, st.session_state.gauge_value + 1)  # Monte de 1% par rafraîchissement
+
+        # Vérifier si la jauge a atteint 100%
+        if st.session_state.gauge_value >= 100:
             st.session_state.game_active = False
+            st.session_state.game_over = True
+            st.rerun()
+
+        # Décrémenter le temps
+        time.sleep(0.5)  # Rafraîchissement toutes les 0.5 secondes pour un effet fluide
+        st.session_state.time_left -= 0.5
+        st.rerun()
+
+        # Fin du jeu si le temps est écoulé
+        if st.session_state.time_left <= 0:
+            st.session_state.game_active = False
+            st.session_state.game_over = False
             st.balloons()
-            st.success(f"🎉 **SCORE FINAL : {st.session_state.score} clics en 10 secondes !**")
-            if st.session_state.score > 30:
-                st.write("🔥 **T'es une machine à cliquer !**")
-            elif st.session_state.score > 15:
+            st.success(f"🎉 **BRAVO ! Tu as tenu 20 secondes !** (Jauge finale : {st.session_state.gauge_value}%)")
+            if st.session_state.gauge_value < 20:
+                st.write("🔥 **T'es un pro du clic !**")
+            elif st.session_state.gauge_value < 50:
                 st.write("👍 **Pas mal !**")
             else:
-                st.write("😅 **T'as besoin de t'entraîner !**")
+                st.write("😅 **T'as failli perdre !**")
+
+    # Si la jauge a atteint 100%
+    if st.session_state.game_over:
+        st.error("💥 **GAME OVER ! La jauge a explosé !**")
+        if st.button("🔄 **Recommencer**"):
+            st.session_state.gauge_value = 0
+            st.session_state.time_left = 20
+            st.session_state.game_active = False
+            st.session_state.game_over = False
+            st.rerun()
 
 elif activity == "💡 Idées Folles":
     st.header("💡 Boîte à Idées Folles")
